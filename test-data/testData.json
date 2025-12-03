@@ -1,0 +1,47 @@
+{
+  "customers": [
+    {
+      "id": 1,
+      "name": "Harry Potter",
+      "accounts": [
+        {
+          "accountNumber": "1001",
+          "type": "Saving",
+          "balance": 50000
+        },
+        {
+          "accountNumber": "1002",
+          "type": "Checking",
+          "balance": 25000
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Ron Weasly",
+      "accounts": [
+        {
+          "accountNumber": "1003",
+          "type": "Saving",
+          "balance": 35000
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Hermoine Granger",
+      "accounts": [
+        {
+          "accountNumber": "1004",
+          "type": "Checking",
+          "balance": 60000
+        }
+      ]
+    }
+  ],
+  "testAmounts": {
+    "validDeposit": [100, 500, 1000, 5000],
+    "validWithdrawal": [50, 200, 500, 1000],
+    "invalidWithdrawal": [100000, 999999]
+  }
+}
