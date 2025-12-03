@@ -2,194 +2,127 @@ pipeline {
     agent any
 
     parameters {
-        choice(
-            name: 'TEST_ENV',
-            choices: ['dev', 'staging', 'prod'],
-            description: 'Select test environment'
-        )
-        choice(
-            name: 'BROWSER',
-            choices: ['chrome', 'firefox', 'headless'],
-            description: 'Select browser for testing'
-        )
-        booleanParam(
-            name: 'RUN_PARALLEL',
-            defaultValue: true,
-            description: 'Run tests in parallel'
-        )
-        booleanParam(
-            name: 'UPDATE_TESTRAIL',
-            defaultValue: true,
-            description: 'Update TestRail with results'
-        )
-        booleanParam(
-            name: 'VALIDATE_DB',
-            defaultValue: true,
-            description: 'Validate database before tests'
-        )
+        choice(name: 'TEST_ENV', choices: ['dev', 'staging', 'prod'], description: 'Select test environment')
+        choice(name: 'BROWSER', choices: ['chrome', 'firefox', 'headless'], description: 'Select browser for testing')
+        booleanParam(name: 'RUN_PARALLEL', defaultValue: true, description: 'Run tests in parallel')
+        booleanParam(name: 'UPDATE_TESTRAIL', defaultValue: true, description: 'Update TestRail with results')
+        booleanParam(name: 'VALIDATE_DB', defaultValue: true, description: 'Validate database before tests')
     }
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         timeout(time: 1, unit: 'HOURS')
         timestamps()
-        ansiColor('xterm')
     }
 
     environment {
-        NODE_ENV = "${params.TEST_ENV}"
-        BROWSER_NAME = "${params.BROWSER}"
+        NODE_ENV        = "${params.TEST_ENV}"
+        BROWSER_NAME    = "${params.BROWSER}"
         PARALLEL_INSTANCES = "${params.RUN_PARALLEL ? '4' : '1'}"
-        DB_HOST = credentials('db-host')
-        DB_USER = credentials('db-user')
+
+        DB_HOST     = credentials('db-host')
+        DB_USER     = credentials('db-user')
         DB_PASSWORD = credentials('db-password')
-        DB_NAME = credentials('db-name')
-        TESTRAIL_URL = credentials('testrail-url')
-        TESTRAIL_USER = credentials('testrail-user')
-        TESTRAIL_PASSWORD = credentials('testrail-password')
+        DB_NAME     = credentials('db-name')
+
+        TESTRAIL_URL        = credentials('testrail-url')
+        TESTRAIL_USER       = credentials('testrail-user')
+        TESTRAIL_PASSWORD   = credentials('testrail-password')
         TESTRAIL_PROJECT_ID = credentials('testrail-project-id')
-        TESTRAIL_SUITE_ID = credentials('testrail-suite-id')
+        TESTRAIL_SUITE_ID   = credentials('testrail-suite-id')
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                echo '📂 Checking out code...'
-                checkout scm
+                ansiColor('xterm') {
+                    echo '📂 Checking out code...'
+                    checkout scm
+                }
             }
         }
 
         stage('Setup Environment') {
             steps {
-                echo '⚙️ Setting up environment...'
-                sh '''
-                    node --version
-                    npm --version
-                '''
+                ansiColor('xterm') {
+                    echo '⚙️ Setting up environment...'
+                    sh '''
+                        node --version
+                        npm --version
+                    '''
+                }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo '📦 Installing dependencies...'
-                sh '''
-                    npm install --legacy-peer-deps
-                '''
+                ansiColor('xterm') {
+                    echo '📦 Installing dependencies...'
+                    sh 'npm install --legacy-peer-deps'
+                }
             }
         }
 
         stage('Database Validation') {
-            when {
-                expression { params.VALIDATE_DB == true }
-            }
+            when { expression { params.VALIDATE_DB } }
             steps {
-                echo '🗄️ Validating database connection...'
-                sh '''
-                    node src/scripts/database/db-validator.js
-                '''
+                ansiColor('xterm') {
+                    echo '🗄️ Validating database connection...'
+                    sh 'node src/scripts/database/db-validator.js'
+                }
             }
         }
 
         stage('Database Setup/Reset') {
-            when {
-                expression { params.TEST_ENV == 'staging' || params.TEST_ENV == 'dev' }
-            }
+            when { expression { params.TEST_ENV == 'staging' || params.TEST_ENV == 'dev' } }
             steps {
-                echo '🔄 Setting up test database...'
-                sh '''
-                    node src/scripts/database/db-setup.js
-                '''
+                ansiColor('xterm') {
+                    echo '🔄 Setting up test database...'
+                    sh 'node src/scripts/database/db-setup.js'
+                }
             }
         }
 
         stage('Compile TypeScript') {
             steps {
-                echo '🔨 Compiling TypeScript...'
-                sh '''
-                    npx tsc --noEmit -p tsconfig.json
-                '''
+                ansiColor('xterm') {
+                    echo '🔨 Compiling TypeScript...'
+                    sh 'npx tsc --noEmit -p tsconfig.json'
+                }
             }
         }
 
         stage('Run Tests') {
             steps {
-                echo '🧪 Running automated tests...'
-                sh '''
-                    if [ "${BROWSER_NAME}" = "headless" ]; then
-                        npm run test:headless -- --maxInstances=${PARALLEL_INSTANCES}
-                    elif [ "${BROWSER_NAME}" = "firefox" ]; then
-                        npm run test:firefox -- --maxInstances=${PARALLEL_INSTANCES}
-                    else
-                        npm test -- --maxInstances=${PARALLEL_INSTANCES}
-                    fi
-                '''
+                ansiColor('xterm') {
+                    echo '🧪 Running automated tests...'
+                    sh '''
+                        if [ "${BROWSER_NAME}" = "headless" ]; then
+                            npm run test:headless -- --maxInstances=${PARALLEL_INSTANCES}
+                        elif [ "${BROWSER_NAME}" = "firefox" ]; then
+                            npm run test:firefox -- --maxInstances=${PARALLEL_INSTANCES}
+                        else
+                            npm test -- --maxInstances=${PARALLEL_INSTANCES}
+                        fi
+                    '''
+                }
             }
         }
 
         stage('Database Cleanup') {
             steps {
-                echo '🧹 Cleaning up test data...'
-                sh '''
-                    node src/scripts/database/db-cleanup.js
-                '''
+                ansiColor('xterm') {
+                    echo '🧹 Cleaning up test data...'
+                    sh 'node src/scripts/database/db-cleanup.js'
+                }
             }
         }
 
         stage('TestRail Integration') {
-            when {
-                expression { params.UPDATE_TESTRAIL == true }
-            }
+            when { expression { params.UPDATE_TESTRAIL } }
             steps {
-                echo '📊 Updating TestRail...'
-                sh '''
-                    node src/scripts/testrail/testrail-uploader.js
-                '''
-            }
-        }
-
-        stage('Generate Reports') {
-            steps {
-                echo '📈 Generating test reports...'
-                sh '''
-                    npm run report || true
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            echo '📋 Collecting test artifacts...'
-            junit testResults: 'reports/**/*.xml', allowEmptyResults: true
-            publishHTML([
-                reportDir: 'allure-results',
-                reportFiles: 'index.html',
-                reportName: 'Allure Test Report',
-                keepAll: true,
-                alwaysLinkToLastBuild: true
-            ])
-            archiveArtifacts artifacts: 'reports/**/*.log', allowEmptyArchive: true
-        }
-
-        success {
-            echo '✅ Pipeline succeeded!'
-            echo 'Test reports available in Allure Report'
-        }
-
-        failure {
-            echo '❌ Pipeline failed!'
-            sh '''
-                echo "Test execution failed. Check logs for details."
-            '''
-        }
-
-        unstable {
-            echo '⚠️ Pipeline unstable - some tests failed'
-        }
-
-        cleanup {
-            echo '🧹 Cleaning workspace...'
-            deleteDir()
-        }
-    }
-}
+                ansiColor('xterm') {
+                    echo '📊 Updating TestRail...'
+                    sh 'node src/scripts/testrail/testrail-uploader.js'
+                }
