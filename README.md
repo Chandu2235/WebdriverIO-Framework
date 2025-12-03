@@ -2,9 +2,7 @@
 
 <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/bea3af3e-adcc-456a-be74-0e37ec92b38c" />
 
-
-
-
+<img width="1915" height="1035" alt="image" src="https://github.com/user-attachments/assets/e3d4b022-f5e8-4308-a8a3-6ed27971e0db" />
 
 # WebdriverIO POM Framework for Banking Application
 
