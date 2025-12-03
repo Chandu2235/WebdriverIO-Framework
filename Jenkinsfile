@@ -126,3 +126,55 @@ pipeline {
                     echo '📊 Updating TestRail...'
                     sh 'node src/scripts/testrail/testrail-uploader.js'
                 }
+            }
+        }
+
+        stage('Generate Reports') {
+            steps {
+                ansiColor('xterm') {
+                    echo '📈 Generating test reports...'
+                    sh 'npm run report || true'
+                }
+            }
+        }
+    }
+
+    post {
+
+        always {
+            ansiColor('xterm') {
+                echo '📋 Collecting test artifacts...'
+
+                junit testResults: 'reports/**/*.xml', allowEmptyResults: true
+
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'allure-results',
+                    reportFiles: 'index.html',
+                    reportName: 'Allure Test Report'
+                ])
+
+                archiveArtifacts artifacts: 'reports/**/*.log', allowEmpty: true
+            }
+        }
+
+        success {
+            echo '✅ Pipeline succeeded!'
+        }
+
+        failure {
+            echo '❌ Pipeline failed!'
+        }
+
+        unstable {
+            echo '⚠️ Pipeline unstable - some tests failed'
+        }
+
+        cleanup {
+            echo '🧹 Cleaning workspace...'
+            deleteDir()
+        }
+    }
+}
