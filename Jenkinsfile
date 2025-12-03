@@ -23,27 +23,25 @@ pipeline {
 
     post {
         always {
-            node {
+            echo "📦 Archiving reports..."
+            archiveArtifacts artifacts: 'reports/**/*.log', allowEmptyArchive: true
 
-                echo "📦 Archiving reports..."
-                archiveArtifacts artifacts: 'reports/**/*.log', allowEmptyArchive: true
+            echo "📊 Publishing JUnit..."
+            junit allowEmptyResults: true, testResults: 'reports/**/*.xml'
 
-                echo "📊 Publishing JUnit..."
-                junit allowEmptyResults: true, testResults: 'reports/**/*.xml'
+            echo "📤 Uploading results to TestRail..."
+            sh '''
+                node testrail-upload.js || true
+            '''
 
-                echo "🧹 Cleaning workspace..."
-                deleteDir()
-
-                echo "📤 Uploading results to TestRail..."
-                sh '''
-                    npx wdio run ./wdio.conf.js
-                '''
-            }
+            echo "🧹 Cleaning workspace..."
+            cleanWs()
         }
 
         failure {
             echo "❌ Pipeline failed!"
         }
+
         success {
             echo "✅ Pipeline passed!"
         }
