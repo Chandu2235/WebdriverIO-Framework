@@ -156,7 +156,7 @@ pipeline {
                     reportName: 'Allure Test Report'
                 ])
 
-                archiveArtifacts artifacts: 'reports/**/*.log', allowEmpty: true
+                archiveArtifacts artifacts: 'reports/**/*.log', allowEmptyArchive: true
             }
         }
 
