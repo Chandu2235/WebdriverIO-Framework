@@ -1,87 +1,20 @@
-# 🏦 WebdriverIO Banking Framework
+<img width="1918" height="1077" alt="image" src="https://github.com/user-attachments/assets/2151c585-ed16-4a92-9cd8-f257ee4ee51b" />
 
-**Production-Ready** WebdriverIO POM Framework for automating the Global QA Banking Application with **Jenkins CI/CD**, **MySQL Database Integration**, and **TestRail Test Management**.
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/bea3af3e-adcc-456a-be74-0e37ec92b38c" />
 
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)]()
-[![WebdriverIO](https://img.shields.io/badge/WebdriverIO-8.27.0-blue)]()
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3.0-blue)]()
-[![MySQL](https://img.shields.io/badge/MySQL-5.7+-green)]()
-[![Jenkins](https://img.shields.io/badge/Jenkins-Ready-orange)]()
-[![License](https://img.shields.io/badge/License-ISC-green)]()
 
----
 
-## 📋 Quick Overview
 
-A comprehensive test automation framework with:
 
-- **18 Automated Test Cases** across 6 test suites
-- **7 Page Objects** following Page Object Model pattern  
-- **MySQL Database Integration** for test data management
-- **Jenkins CI/CD Pipeline** with 6 automation stages
-- **TestRail Integration** for test management and reporting
-- **Allure Reports** for detailed test analytics
-- **TypeScript** for type-safe, maintainable code
+# WebdriverIO POM Framework for Banking Application
 
----
+A comprehensive Page Object Model (POM) automation framework for testing the Global QA Banking Application using WebdriverIO with TypeScript.
 
-## 🎯 Key Features
+## 🏦 Application Under Test
 
-✅ **Page Object Model** - Clean, maintainable, reusable code
-✅ **Multi-Browser Support** - Chrome, Firefox, and headless modes
-✅ **Database Integration** - MySQL with automatic setup/cleanup
-✅ **CI/CD Ready** - Jenkins declarative pipeline
-✅ **Test Management** - TestRail API integration
-✅ **Comprehensive Logging** - Color-coded console output
-✅ **Professional Reports** - Allure HTML reports
-✅ **Environment Config** - .env-based configuration
-✅ **18 Test Cases** - Full application coverage
-✅ **Production Ready** - Enterprise-grade framework
-
----
-
-## 🚀 Quick Start (5 Minutes)
-
-### 1. Install Dependencies
-```powershell
-cd "d:\WebdriverIO framework"
-npm install --legacy-peer-deps
-```
-
-### 2. Configure Environment
-```powershell
-Copy-Item .env.example .env
-# Edit .env with your database and TestRail credentials
-```
-
-### 3. Run Tests
-```powershell
-# Run smoke tests (quick validation)
-npm run test:smoke
-
-# Or run all tests
-npm test
-```
-
-### 4. View Reports
-```powershell
-npm run report
-```
-
----
-
-## 📚 Documentation
-
-| Document | Purpose | Time |
-|----------|---------|------|
-| **[QUICKSTART_SETUP.md](./QUICKSTART_SETUP.md)** | 5-minute setup guide | 5 min |
-| **[COMPLETE_SETUP_GUIDE.md](./COMPLETE_SETUP_GUIDE.md)** | Comprehensive setup with all options | 30 min |
-| **[docs/JENKINS_INTEGRATION.md](./docs/JENKINS_INTEGRATION.md)** | Jenkins CI/CD pipeline setup | 20 min |
-| **[docs/DATABASE_INTEGRATION.md](./docs/DATABASE_INTEGRATION.md)** | MySQL database configuration | 15 min |
-| **[docs/TESTRAIL_INTEGRATION.md](./docs/TESTRAIL_INTEGRATION.md)** | TestRail integration guide | 15 min |
-| **[IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md)** | Complete implementation checklist | Reference |
-
----
+- **URL**: [Banking Project](https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login)
+- **Type**: Angular-based Banking Application
+- **Features**: Customer & Manager authentication, Account management, Deposits, Withdrawals, Transactions
 
 ## 📁 Project Structure
 
