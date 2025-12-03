@@ -16,9 +16,9 @@ pipeline {
     }
 
     environment {
-        NODE_ENV        = "${params.TEST_ENV}"
-        BROWSER_NAME    = "${params.BROWSER}"
-        PARALLEL_INSTANCES = "${params.RUN_PARALLEL ? '4' : '1'}"
+        NODE_ENV             = "${params.TEST_ENV}"
+        BROWSER_NAME         = "${params.BROWSER}"
+        PARALLEL_INSTANCES   = "${params.RUN_PARALLEL ? '4' : '1'}"
 
         DB_HOST     = credentials('db-host')
         DB_USER     = credentials('db-user')
@@ -26,7 +26,7 @@ pipeline {
         DB_NAME     = credentials('db-name')
 
         TESTRAIL_URL        = credentials('testrail-url')
-        TESTRAIL_USER       = credentials('testrail-user')
+        TESTRAIL_USER       = credentials('tesrail-user')
         TESTRAIL_PASSWORD   = credentials('testrail-password')
         TESTRAIL_PROJECT_ID = credentials('testrail-project-id')
         TESTRAIL_SUITE_ID   = credentials('testrail-suite-id')
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '📂 Checking out code...'
                     checkout scm
                 }
@@ -45,7 +45,7 @@ pipeline {
 
         stage('Setup Environment') {
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '⚙️ Setting up environment...'
                     sh '''
                         node --version
@@ -57,7 +57,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '📦 Installing dependencies...'
                     sh 'npm install --legacy-peer-deps'
                 }
@@ -67,7 +67,7 @@ pipeline {
         stage('Database Validation') {
             when { expression { params.VALIDATE_DB } }
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '🗄️ Validating database connection...'
                     sh 'node src/scripts/database/db-validator.js'
                 }
@@ -75,9 +75,9 @@ pipeline {
         }
 
         stage('Database Setup/Reset') {
-            when { expression { params.TEST_ENV == 'staging' || params.TEST_ENV == 'dev' } }
+            when { expression { params.TEST_ENV == "staging" || params.TEST_ENV == "dev" } }
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '🔄 Setting up test database...'
                     sh 'node src/scripts/database/db-setup.js'
                 }
@@ -86,7 +86,7 @@ pipeline {
 
         stage('Compile TypeScript') {
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '🔨 Compiling TypeScript...'
                     sh 'npx tsc --noEmit -p tsconfig.json'
                 }
@@ -95,7 +95,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '🧪 Running automated tests...'
                     sh '''
                         if [ "${BROWSER_NAME}" = "headless" ]; then
@@ -112,7 +112,7 @@ pipeline {
 
         stage('Database Cleanup') {
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '🧹 Cleaning up test data...'
                     sh 'node src/scripts/database/db-cleanup.js'
                 }
@@ -122,7 +122,7 @@ pipeline {
         stage('TestRail Integration') {
             when { expression { params.UPDATE_TESTRAIL } }
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '📊 Updating TestRail...'
                     sh 'node src/scripts/testrail/testrail-uploader.js'
                 }
@@ -131,7 +131,7 @@ pipeline {
 
         stage('Generate Reports') {
             steps {
-                ansiColor('xterm') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                     echo '📈 Generating test reports...'
                     sh 'npm run report || true'
                 }
@@ -142,16 +142,16 @@ pipeline {
     post {
 
         always {
-            ansiColor('xterm') {
+            wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
                 echo '📋 Collecting test artifacts...'
 
                 junit testResults: 'reports/**/*.xml', allowEmptyResults: true
 
                 publishHTML([
-                    allowMissing: false,
+                    allowMissing: true,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: 'allure-results',
+                    reportDir: 'allure-report',
                     reportFiles: 'index.html',
                     reportName: 'Allure Test Report'
                 ])
