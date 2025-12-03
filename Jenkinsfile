@@ -10,13 +10,13 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npm run test'
+                bat 'npm run test'
             }
         }
     }
@@ -30,8 +30,10 @@ pipeline {
             junit allowEmptyResults: true, testResults: 'reports/**/*.xml'
 
             echo "📤 Uploading results to TestRail..."
-            sh '''
-                node testrail-upload.js || true
+
+            // If JS uploader exists
+            bat '''
+                node testrail-upload.js || exit 0
             '''
 
             echo "🧹 Cleaning workspace..."
