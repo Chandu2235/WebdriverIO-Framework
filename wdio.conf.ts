@@ -33,7 +33,13 @@ export const config: Options.Testrunner = {
   mochaOpts: {
     ui: 'bdd',
     timeout: 60000,
-    require: ['ts-node/register'],
+  },
+  autoCompileOpts: {
+    autoCompile: true,
+    tsNodeOpts: {
+      transpileOnly: true,
+      project: './tsconfig.json',
+    },
   },
   reporters: [
     [

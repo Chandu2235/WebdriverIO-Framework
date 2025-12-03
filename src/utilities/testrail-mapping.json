@@ -1,0 +1,77 @@
+{
+  "projectId": 1,
+  "suiteId": 1,
+  "testCases": {
+    "login": {
+      "specs": "src/tests/specs/login.spec.ts",
+      "cases": {
+        "should login with valid credentials": "C1",
+        "should display error message for invalid username": "C2",
+        "should display error message for invalid password": "C3",
+        "should display error message for empty credentials": "C4"
+      }
+    },
+    "dashboard": {
+      "specs": "src/tests/specs/dashboard.spec.ts",
+      "cases": {
+        "should display customer dashboard after login": "C5",
+        "should display customer dropdown with registered customers": "C6",
+        "should logout successfully": "C7"
+      }
+    },
+    "accounts": {
+      "specs": "src/tests/specs/accounts.spec.ts",
+      "cases": {
+        "should display list of accounts": "C8",
+        "should select account and display details": "C9"
+      }
+    },
+    "transactions": {
+      "specs": "src/tests/specs/transactions.spec.ts",
+      "cases": {
+        "should display transaction history": "C10",
+        "should reset transaction data": "C11"
+      }
+    },
+    "deposits": {
+      "specs": "src/tests/specs/deposits.spec.ts",
+      "cases": {
+        "should deposit money to account": "C12",
+        "should display deposit confirmation": "C13"
+      }
+    },
+    "withdrawals": {
+      "specs": "src/tests/specs/withdrawals.spec.ts",
+      "cases": {
+        "should withdraw money from account": "C14",
+        "should display withdrawal confirmation": "C15"
+      }
+    },
+    "smoke": {
+      "specs": "src/tests/specs/smoke.spec.ts",
+      "cases": {
+        "should verify WebdriverIO framework is working": "C16",
+        "should verify page objects are initialized": "C17",
+        "should verify utilities are loaded": "C18"
+      }
+    }
+  },
+  "environmentMappings": {
+    "dev": "3",
+    "staging": "4",
+    "production": "5"
+  },
+  "statusMappings": {
+    "PASSED": 1,
+    "BLOCKED": 2,
+    "UNTESTED": 3,
+    "RETEST": 4,
+    "FAILED": 5
+  },
+  "priorityMappings": {
+    "LOW": 1,
+    "MEDIUM": 2,
+    "HIGH": 3,
+    "CRITICAL": 4
+  }
+}
